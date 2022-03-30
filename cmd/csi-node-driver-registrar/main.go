@@ -159,6 +159,18 @@ func main() {
 			klog.Fatalf("Kubelet plugin registration hasn't succeeded yet, file=%s doesn't exist.", registrationProbePath)
 			os.Exit(1)
 		}
+		if *csiAddress != "" {
+			socketExists, err := util.DoesSocketExist(*csiAddress)
+			if err != nil {
+				klog.Fatalf("Failed to check if csiAddress exists, csiAddress=%s err=%v", *csiAddress, err)
+				os.Exit(1)
+			}
+			if !socketExists {
+				klog.Fatalf("CSI socket hasn't succeeded yet, file=%s is not a socket.", *csiAddress)
+				os.Exit(1)
+			}
+		}
+
 		klog.Infof("Kubelet plugin registration succeeded.")
 		os.Exit(0)
 	}
